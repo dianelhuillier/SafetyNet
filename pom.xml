@@ -15,7 +15,7 @@
 	<name>1stproject</name>
 	<description>1st project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -41,6 +41,14 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		
+		
+		<dependency>
+   	 <groupId>org.json</groupId>
+    		<artifactId>json</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -61,4 +69,13 @@
 		</plugins>
 	</build>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20210307</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

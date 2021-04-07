@@ -26,7 +26,7 @@ public class PersonController {
 	 * 
 	 * @return - An Iterable object of Employee full filled
 	 */
-	@GetMapping("/persons")
+	@GetMapping("/person")
 	public Iterable<Person> getPersons() {
 		return personService.getPersons();
 	}
@@ -35,13 +35,15 @@ public class PersonController {
 	public List<Person> getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
 		List<Firestation> firestations = firestationService.getFirestationByStation(station);
 
+//		HashMap<Person, String> ageList = new HashMap<Person, String>();
+
 		List<Person> persons = new ArrayList<>();
 		for (Firestation firestation : firestations) {
 			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
+
 		}
 
 		return persons;
-
 	}
 
 //	@GetMapping("/phoneByStation")
@@ -57,5 +59,9 @@ public class PersonController {
 //		return persons;
 //
 //	}
+	@GetMapping("/communityEmail")
+	public Iterable<Person> getPersons(@RequestParam(value = "city") String city) { // lien bon, liste vide
+		return personService.getPersons();
 
+	}
 }

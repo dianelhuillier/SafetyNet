@@ -14,6 +14,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
 	List<Person> findByAddress(String address);
 
-//	List<Person> findByStation(String phone);
+//	List<Person> findEmail();
+
+//	List<Person> findByStation(String station);
 
 }

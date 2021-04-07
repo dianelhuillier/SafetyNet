@@ -43,6 +43,11 @@ public class PersonService {
 		return savedPerson;
 	}
 
+//	public Collection<? extends Person> getEmail() {
+//		// TODO Auto-generated method stub
+//		return personRepository.findEmail();
+//	}
+
 //	public Collection<? extends Person> getPhoneByStation(String phone) {
 //		// TODO Auto-generated method stub
 //		return personRepository.findByPhone(phone);

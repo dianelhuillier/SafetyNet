@@ -15,6 +15,10 @@ import com.project.safetynet.model.Person;
 import com.project.safetynet.service.FirestationService;
 import com.project.safetynet.service.PersonService;
 
+/**
+ * @author tite_
+ *
+ */
 @RestController
 public class PersonController {
 
@@ -33,6 +37,16 @@ public class PersonController {
 		return personService.getPersons();
 	}
 
+	/**
+	 * TODO : http://localhost:8080/firestation?stationNumber=%3Cstation_number
+	 * Cette url doit retourner une liste des personnes couvertes par la caserne de
+	 * pompiers correspondante. Donc, si le numéro de station = 1, elle doit
+	 * renvoyer les habitants couverts par la station numéro 1. La liste doit
+	 * inclure les informations spécifiques suivantes : prénom, nom, adresse, numéro
+	 * de téléphone. De plus, elle doit fournir un décompte du nombre d'adultes et
+	 * du nombre d'enfants (tout individu âgé de 18 ans ou moins) dans la zone
+	 * desservie. TODO : DECOMPTE
+	 */
 	@GetMapping("/firestation")
 	public List<Person> getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
 		List<Firestation> firestations = firestationService.getFirestationByStation(station);
@@ -42,6 +56,7 @@ public class PersonController {
 		List<Person> persons = new ArrayList<>();
 		for (Firestation firestation : firestations) {
 			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
+//			Stream<List<Person>> ageList = Stream.of(persons).filter(personService.getPersonByAge()<18); //passer par medrecord pour l'age
 
 		}
 
@@ -61,8 +76,11 @@ public class PersonController {
 //		return persons;
 //
 //	}
-//http://localhost:8080/communityEmail?city=Culver
 
+	/**
+	 * http://localhost:8080/communityEmail?city=Culver TODO : Cette url doit
+	 * retourner les adresses mail de tous les habitants de la ville
+	 */
 	@GetMapping("/communityEmail")
 	public List<String> getPersonsEmail(@RequestParam(value = "city") String city) { // value city = value culver ? osef
 		List<Person> persons = personService.getPersonsByCity(city);
@@ -82,12 +100,12 @@ public class PersonController {
 
 	}
 
-	// TODO : Cette url doit retourner la liste des habitants vivant à l’adresse
-	// donnée ainsi que le numéro de la caserne
-	// de pompiers la desservant. La liste doit inclure le nom, le numéro de
-	// téléphone, l'âge et les antécédents
-	// médicaux (médicaments, posologie et allergies) de chaque personne.
-
+	/*
+	 * TODO : Cette url doit retourner la liste des habitants vivant à l’adresse
+	 * donnée ainsi que le numéro de la caserne de pompiers la desservant. La liste
+	 * doit inclure le nom, le numéro de téléphone, l'âge et les antécédents
+	 * médicaux (médicaments, posologie et allergies) de chaque personne.
+	 */
 	// http://localhost:8080/fire?address=%3Caddress
 
 	@GetMapping("/fire")
@@ -95,7 +113,7 @@ public class PersonController {
 		List<Person> persons = personService.getPersonsByAddress(address); // ok il faut mapper le nom et le medrecord
 
 		for (Person person : persons) {
-
+//if string name json 1 = string name json 2 then new list with all
 		}
 		// List<String> medicalRecords =
 		// MedicalRecordService.getMedicalByFirstName(personService.getPersonByFirstName(firstName));
@@ -104,4 +122,48 @@ public class PersonController {
 
 	}
 
+	/*
+	 * http://localhost:8080/childAlert?address=<address> TODO : Cette url doit
+	 * retourner une liste d'enfants (tout individu âgé de 18 ans ou moins) habitant
+	 * à cette adresse. La liste doit comprendre le prénom et le nom de famille de
+	 * chaque enfant, son âge et une liste des autres membres du foyer. S'il n'y a
+	 * pas d'enfant, cette url peut renvoyer une chaîne vide.
+	 */
+
+	/*
+	 * TODO : http://localhost:8080/phoneAlert?firestation=<firestation_number>
+	 * Cette url doit retourner une liste des numéros de téléphone des résidents
+	 * desservis par la caserne de pompiers. Nous l'utiliserons pour envoyer des
+	 * messages texte d'urgence à des foyers spécifiques.
+	 */
+
+	@GetMapping("/phoneAlert")
+	public List<String> getPhoneByStation(@RequestParam(value = "firestation") String station) {
+		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+		List<Person> persons = new ArrayList<>();
+		for (Firestation firestation : firestations) {
+			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
+		}
+		List<String> listPhoneByStation = ((Collection<Person>) persons).stream().map(Person::getPhone)
+				.collect(Collectors.toList());
+
+		return listPhoneByStation;
+	}
+
 }
+/*
+ * TODO : http://localhost:8080/flood/stations?stations=<a list of
+ * station_numbers> Cette url doit retourner une liste de tous les foyers
+ * desservis par la caserne. Cette liste doit regrouper les personnes par
+ * adresse. Elle doit aussi inclure le nom, le numéro de téléphone et l'âge des
+ * habitants, et faire figurer leurs antécédents médicaux (médicaments,
+ * posologie et allergies) à côté de chaque nom
+ */
+
+/*
+ * TODO :
+ * http://localhost:8080/personInfo?firstName=<firstName>&lastName=<lastName>
+ * Cette url doit retourner le nom, l'adresse, l'âge, l'adresse mail et les
+ * antécédents médicaux (médicaments, posologie, allergies) de chaque habitant.
+ * Si plusieurs personnes portent le même nom, elles doivent toutes apparaître.
+ */

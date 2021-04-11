@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//@NamedQuery(name = "Person.findEmail", query = "SELECT email FROM com.project.safetynet.model.Person  WHERE id = ?1")
+//@Table(name = "persons") => fonctionne
 public class Person {
 
 	@Id // chaque entité doit avoir une ID

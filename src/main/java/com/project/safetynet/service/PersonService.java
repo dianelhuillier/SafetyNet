@@ -43,6 +43,10 @@ public class PersonService {
 		return savedPerson;
 	}
 
+	public List<Person> getPersonsByCity(String city) {
+
+		return personRepository.findByCity(city);
+	}
 //	public Collection<? extends Person> getEmail() {
 //		// TODO Auto-generated method stub
 //		return personRepository.findEmail();
@@ -56,5 +60,8 @@ public class PersonService {
 //		return personRepository.findByStation(phone);
 //
 //	}
+	public List<Person> getPersonByFirstName(String firstName) {
+		return personRepository.findPersonByFirstName(firstName);
+	}
 
 }

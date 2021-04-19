@@ -23,6 +23,7 @@ import com.project.safetynet.model.Firestation;
 import com.project.safetynet.model.ListByStationDTO;
 import com.project.safetynet.model.MedicalRecord;
 import com.project.safetynet.model.Person;
+import com.project.safetynet.model.PersonInfoDTO;
 import com.project.safetynet.repository.PersonRepository;
 import com.project.safetynet.service.FirestationService;
 import com.project.safetynet.service.MedicalRecordService;
@@ -199,17 +200,17 @@ public class PersonController {
 //	}
 
 	@GetMapping("/personInfo")
-	public List<ChildrensDTO> getInfos(@RequestParam(value = "firstName") String firstName,
+	public List<PersonInfoDTO> getInfos(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
-		List<Person> persons = personService.getPersonsByLastName(lastName);
-		List<ChildrensDTO> familyName = new ArrayList<>();
-		for (Person person : persons) {
-			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByLastName(person.getLastName());
-			if (personService.getPersonsByLastName(lastName) != null) {
-				familyName.add(new ChildrensDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
-						medicalRecord.getBirthdate(), persons));
-			}
 
+		List<Person> persons = personService.getPersonsByLastName(lastName);
+
+		List<PersonInfoDTO> familyName = new ArrayList<>();
+
+		for (Person person : persons) {
+			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
+			familyName.add(new PersonInfoDTO(person.getLastName(), person.getFirstName(), person.getAddress(),
+					person.getEmail(), Util.calculAgeByBirthdate(medicalRecord.getBirthdate())));
 		}
 
 		return familyName;

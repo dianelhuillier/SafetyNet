@@ -143,10 +143,10 @@ public class PersonController {
 	 * inclure le nom, le numéro de téléphone, l'âge et les antécédents médicaux
 	 * (médicaments, posologie et allergies) de chaque personne.
 	 */
-	// TODO : http://localhost:8080/fire?address=%3Caddress
+	// TODO : ok http://localhost:8080/fire?address=%3Caddress
 
 	@GetMapping("/fire")
-	public List<Person> getInfoByAddress(@RequestParam(value = "address") String address) {
+	public List<FamilyDTO> getInfoByAddress(@RequestParam(value = "address") String address) {
 		List<FamilyDTO> family = new ArrayList<>();
 
 		List<Person> persons = personService.getPersonsByAddress(address); // retourne la liste des personnes en
@@ -160,7 +160,7 @@ public class PersonController {
 
 		}
 
-		return persons;
+		return family;
 
 	}
 

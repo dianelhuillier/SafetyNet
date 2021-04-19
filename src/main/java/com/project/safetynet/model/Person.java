@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "Person")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +24,10 @@ public class Person {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+//    @OneToMany
+//    @JoinTable( name = "Jointure",
+//                joinColumns = @JoinColumn( name = "idMedicalRecord" ),
+//                inverseJoinColumns = @JoinColumn( name = "idPerson" ) )
 	private String firstName;
 	private String lastName;
 	private String address;
@@ -29,5 +35,4 @@ public class Person {
 	private String zip;
 	private String phone;
 	private String email;
-
 }

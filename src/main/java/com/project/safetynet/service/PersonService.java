@@ -10,14 +10,11 @@ import com.project.safetynet.model.Person;
 import com.project.safetynet.repository.PersonRepository;
 
 import lombok.Data;
-//une couche pour chaque
 
 @Data
 @Service
 
 public class PersonService {
-
-	// PersonService
 
 	@Autowired
 	private PersonRepository personRepository;
@@ -44,24 +41,20 @@ public class PersonService {
 	}
 
 	public List<Person> getPersonsByCity(String city) {
-
 		return personRepository.findByCity(city);
 	}
-//	public Collection<? extends Person> getEmail() {
-//		// TODO Auto-generated method stub
-//		return personRepository.findEmail();
-//	}
 
-//	public Collection<? extends Person> getPhoneByStation(String phone) {
-//		// TODO Auto-generated method stub
-//		return personRepository.findByPhone(phone);
-//	}
-//	public List<Person> getPhoneByStation(final String phone) {
-//		return personRepository.findByStation(phone);
-//
-//	}
 	public List<Person> getPersonByFirstName(String firstName) {
 		return personRepository.findPersonByFirstName(firstName);
+	}
+
+	public List<Person> getPersonsByLastName(String lastName) {
+		return personRepository.findByLastName(lastName);
+	}
+
+	public List<Person> findPersonByAddress(String address) {
+		// TODO Auto-generated method stub
+		return personRepository.findByAddress(address);
 	}
 
 }

@@ -16,4 +16,6 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
 
 	MedicalRecord findByLastName(String lastName);
 
+	MedicalRecord findByFirstNameAndLastName(String firstName, String lastName);
+
 }

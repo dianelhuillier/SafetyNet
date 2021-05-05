@@ -1,12 +1,18 @@
 package com.project.safetynet.controller;
 
+//UN LOG POUR CHAQUE ENDPOINT ET LES TESTS UNITAIRES A 80%
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.safetynet.PersonNotFoundException;
 import com.project.safetynet.model.ChildrensDTO;
 import com.project.safetynet.model.FamilyDTO;
 import com.project.safetynet.model.Firestation;
@@ -30,12 +36,9 @@ import com.project.safetynet.service.MedicalRecordService;
 import com.project.safetynet.service.PersonService;
 import com.project.safetynet.util.Util;
 
-/**
- * @author tite_
- *
- */
 @RestController
 public class PersonController {
+	static Log log = LogFactory.getLog(PersonController.class.getName());
 
 	@Autowired
 	private PersonService personService;
@@ -43,41 +46,147 @@ public class PersonController {
 	private FirestationService firestationService;
 	@Autowired
 	private MedicalRecordService medicalRecordService; // injection de dependance
+	@Autowired
+	private final PersonRepository repository;
+
+	PersonController(PersonRepository repository) {
+		this.repository = repository;
+	}
+
+	// TODO : ENDPOINTS ?? PASSER DANS SERVICE ET REPO => MVC
 
 	/**
-	 * Read - Get all employees
+	 * Read - Get all persons
 	 * 
-	 * @return - An Iterable object of Employee full filled
+	 * @return - An Iterable object of Person full filled
 	 */
-	@GetMapping("/person")
+
+// TODO : VERIFIER
+	@PostMapping("/persons/firstName=<firstName>&lastName=<lastName>")
+	Person newPerson(@RequestBody Person newPerson) {
+		return repository.save(newPerson);
+	}
+
+	@PostMapping("/persons")
+	public Person createPerson(@RequestBody Person person) {
+		return personService.savePerson(person);
+	}
+
+	@GetMapping("/persons")
 	public Iterable<Person> getPersons() {
 		return personService.getPersons();
+	}
+
+	@GetMapping("/persons/firstName=<firstName>&lastName=<lastName>")
+	List<Person> one(@PathVariable String firstName, @PathVariable String lastName) {
+		return repository.findPersonByFirstNameAndLastName(firstName, lastName);
+	}
+
+	@PutMapping("/persons/firstName=<firstName>&lastName=<lastName>")
+	public @ResponseBody ResponseEntity<String> put() {
+		return new ResponseEntity<String>("PUT Response", HttpStatus.OK);
+	}
+
+	@PutMapping("/persons/{id}")
+	public Person updatePerson(@PathVariable("id") final Long id, @RequestBody Person person) {
+		Optional<Person> e = personService.getPersonById(id);
+		if (e.isPresent()) {
+			Person currentPerson = e.get();
+
+			String firstName = person.getFirstName();
+			if (firstName != null) {
+				currentPerson.setFirstName(firstName);
+			}
+			String lastName = person.getLastName();
+			if (lastName != null) {
+				currentPerson.setLastName(lastName);
+				;
+			}
+			String address = person.getAddress();
+			if (address != null) {
+				currentPerson.setAddress(address);
+			}
+			String city = person.getCity();
+			if (city != null) {
+				currentPerson.setCity(city);
+				;
+			}
+			String zip = person.getZip();
+			if (zip != null) {
+				currentPerson.setZip(zip);
+				;
+			}
+			String phone = person.getPhone();
+			if (phone != null) {
+				currentPerson.setPhone(phone);
+				;
+			}
+			String email = person.getEmail();
+			if (email != null) {
+				currentPerson.setEmail(email);
+				;
+			}
+			personService.savePerson(currentPerson);
+			return currentPerson;
+		} else {
+			return null;
+		}
+	}
+
+	/*
+	 * @DeleteMapping("/persons/firstName=<firstName>&lastName=<lastName>") void
+	 * deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
+	 * repository.deleteByFirstNameAndLastName(firstName, lastName); }
+	 */
+	@DeleteMapping("/persons/{id}")
+	public void deletePerson(@PathVariable("id") final Long id) {
+		personService.deletePersonById(id);
 	}
 
 	/**
 	 * TODO : OK http://localhost:8080/firestation?stationNumber=%3Cstation_number
 	 * Cette url doit retourner une liste des personnes couvertes par la caserne de
-	 * pompiers correspondante. Donc, si le numéro de station = 1, elle doit
-	 * renvoyer les habitants couverts par la station numéro 1. La liste doit
-	 * inclure les informations spécifiques suivantes : prénom, nom, adresse, numéro
-	 * // new classe infos de téléphone. De plus, elle doit fournir un décompte du
-	 * nombre d'adultes et du nombre d'enfants (tout individu âgé de 18 ans ou
-	 * moins) dans la zone desservie.
+	 * pompiers correspondante. La liste doit inclure les informations spécifiques
+	 * suivantes : prénom, nom, adresse, numéro de téléphone. De plus, elle doit
+	 * fournir un décompte du nombre d'adultes et du nombre d'enfants (tout individu
+	 * âgé de 18 ans ou moins) dans la zone desservie.
 	 */
+
+//	@GetMapping("/firestation")
+//	public List<FamilyDTO> getPersonByStationNumber(@RequestParam(value = "stationNumber") String station){
+//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+//		
+//		List<FamilyDTO> persons= new ArrayList<>();
+//
+//for (Firestation firestation : firestations) {
+//	persons.add((FamilyDTO) personService.findPersonByAddress(firestation.getAddress()));
+//		}
+//for (FamilyDTO person : persons) {
+//	int numberAdults = 0;
+//	int numberChilds = 0;
+//
+//	if (Util.calculAgeByBirthdate(
+//			medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+//		numberChilds++;
+//	} else {
+//		numberAdults++;
+//	}
+//	
+//}
+//log.info("Endpoint /firestation valide");
+//		return persons;
+//	}
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	@GetMapping("/firestation")
 	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
-		// HashMap<Person, Long> listFinal = new HashMap<Person, Long>();
 		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-//		HashMap<Person, String> ageList = new HashMap<Person, String>();
 		List<Person> persons = new ArrayList<>();
 		int numberChilds = 0;
 		int numberAdults = 0;
 		for (Firestation firestation : firestations) {
-			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
-//			Stream<List<Person>> ageList = Stream.of(persons).filter(personService.getPersonByAge()<18); //passer par medrecord pour l'age
-
+			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
 		}
-
 		for (Person person : persons) {
 			if (Util.calculAgeByBirthdate(
 					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
@@ -87,8 +196,7 @@ public class PersonController {
 			}
 
 		}
-//		long total = persons.stream().count();
-//		listFinal.put((Person) persons, total);
+		log.info("Endpoint /firestation valide");
 		return new ListByStationDTO(persons, numberChilds, numberAdults);
 	}
 
@@ -102,18 +210,20 @@ public class PersonController {
 	@GetMapping("/childAlert")
 	public List<ChildrensDTO> getChildByAddress(@RequestParam(value = "address") String address) {
 
-		List<Person> persons = personService.getPersonsByAddress(address); // retourne la liste des personnes en
+		List<Person> persons = personService.findPersonByAddress(address); // retourne la liste des personnes en
 																			// fonction de l'adresse qui lui correspond
 		List<ChildrensDTO> childrens = new ArrayList<>();
 
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
-			if (medicalRecord != null && Util.calculAgeByBirthdate(medicalRecord.getBirthdate()) <= 18) {
+			// if (medicalRecord != null &&
+			// Util.calculAgeByBirthdate(medicalRecord.getBirthdate()) <= 18) {
+			if (Util.calculAgeByBirthdate(medicalRecord.getBirthdate()) <= 18) {
 				childrens.add(new ChildrensDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
-						medicalRecord.getBirthdate(), personService.getPersonsByAddress(person.getAddress())));
+						medicalRecord.getBirthdate(), personService.findPersonByAddress(person.getAddress())));
 			}
 		}
-
+		log.info("Endpoint /childAlert valide");
 		return childrens;
 
 	}
@@ -130,11 +240,11 @@ public class PersonController {
 		List<Firestation> firestations = firestationService.getFirestationByStation(station);
 		List<Person> persons = new ArrayList<>();
 		for (Firestation firestation : firestations) {
-			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
+			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
 		}
 		List<String> listPhoneByStation = ((Collection<Person>) persons).stream().map(Person::getPhone)
 				.collect(Collectors.toList());
-
+		log.info("Endpoint /phoneAlert valide");
 		return listPhoneByStation;
 	}
 
@@ -150,23 +260,28 @@ public class PersonController {
 	public List<FamilyDTO> getInfoByAddress(@RequestParam(value = "address") String address) {
 		List<FamilyDTO> family = new ArrayList<>();
 
-		List<Person> persons = personService.getPersonsByAddress(address); // retourne la liste des personnes en
+		List<Person> persons = personService.findPersonByAddress(address); // retourne la liste des personnes en
+		if (persons == null) {
+			log.info("pas de famille existante à cette adresse");
+			log.debug("il n'y a pas de famille à cette addresse");
+		} else {
+			log.info("il y a une famille à cette adresse");
+			for (Person person : persons) {
+				MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
+				Firestation firestation = firestationService.findStationNumberByAddress(person.getAddress());
+				family.add(new FamilyDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
+						Util.calculAgeByBirthdate(medicalRecord.getBirthdate()), person.getPhone(),
+						firestation.getStation(), medicalRecord.getMedications(), medicalRecord.getAllergies(),
+						personService.findPersonByAddress(person.getAddress()), 0, 0));
 
-		for (Person person : persons) {
-			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
-			Firestation firestation = firestationService.findStationNumberByAddress(person.getAddress());
-			family.add(new FamilyDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
-					Util.calculAgeByBirthdate(medicalRecord.getBirthdate()), person.getPhone(),
-					firestation.getStation(), personService.getPersonsByAddress(person.getAddress())));
-
+			}
 		}
-
+		log.info("Endpoint /fire valide");
 		return family;
 
 	}
 
 	/*
-	 * fonctionne avec http://localhost:8080/flood?stations=3
 	 * 
 	 * /* TODO : http://localhost:8080/flood/stations?stations=<a list of
 	 * station_numbers> Cette url doit retourner une liste de tous les foyers
@@ -175,17 +290,41 @@ public class PersonController {
 	 * habitants, et faire figurer leurs antécédents médicaux (médicaments,
 	 * posologie et allergies) à côté de chaque nom
 	 */
-	@GetMapping("/flood")
-	public Stream<String> getPersonsByFirestationNumberAndAddress(@RequestParam(value = "stations") String station) {
-		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-		List<Person> persons = new ArrayList<>();
-		for (Firestation firestation : firestations) {
-			persons.addAll(personService.getPersonsByAddress(firestation.getAddress()));
-		}
-		Stream<String> infoFlood = ((Collection<Person>) persons).stream().map(Person::getLastName);
-		((Collection<Person>) persons).stream().map(Person::getPhone).collect(Collectors.toList());
 
+	@GetMapping("/flood/stations")
+	public List<FamilyDTO> getPersonsByFirestationNumberAndAddress(@RequestParam(value = "stations") String station) {
+		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+
+		List<Person> persons = new ArrayList<>();
+
+		List<FamilyDTO> infoFlood = new ArrayList<>();
+		if (firestations == null) {
+			log.error("il n'y a pas de station attribuée à cette valeur");
+		} else {
+			for (Firestation firestation : firestations) {
+				persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
+				log.info("liste de personnes attribuées  la caserne");
+			}
+
+			for (Person person : persons) {
+				if (persons == null) {
+					log.debug("personne ne vit près de cette caserne");
+				} else {
+					MedicalRecord medicalRecord = medicalRecordService
+							.findMedicalRecordByFirstName(person.getFirstName());
+					Firestation firestation = firestationService.findStationNumberByAddress(person.getAddress());
+
+					infoFlood.add(new FamilyDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
+							Util.calculAgeByBirthdate(medicalRecord.getBirthdate()), person.getPhone(),
+							firestation.getStation(), medicalRecord.getMedications(), medicalRecord.getAllergies(),
+							personService.findPersonByAddress(person.getAddress()), 0, 0));
+					log.info("liste de personnes attribuées à la caserne ainsi que les informations necessaires");
+				}
+			}
+		}
+		log.info("Endpoint /flood valide");
 		return infoFlood;
+
 	}
 
 	/*
@@ -204,15 +343,21 @@ public class PersonController {
 			@RequestParam(value = "lastName") String lastName) {
 
 		List<Person> persons = personService.getPersonsByLastName(lastName);
-
+		log.info("liste de personnes ayant le même nom de famille");
 		List<PersonInfoDTO> familyName = new ArrayList<>();
 
-		for (Person person : persons) {
-			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
-			familyName.add(new PersonInfoDTO(person.getLastName(), person.getFirstName(), person.getAddress(),
-					person.getEmail(), Util.calculAgeByBirthdate(medicalRecord.getBirthdate())));
+		if (lastName == null) {
+			log.error("nom de famille inexistant");
+		} else {
+			log.info("nom de famille trouvé");
+			for (Person person : persons) {
+				MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
+				familyName.add(new PersonInfoDTO(person.getLastName(), person.getFirstName(), person.getAddress(),
+						person.getEmail(), Util.calculAgeByBirthdate(medicalRecord.getBirthdate())));
+				log.debug("personne spécifique, ses informations et sa famille");
+			}
 		}
-
+		log.info("Endpoint /personInfo valide");
 		return familyName;
 	}
 
@@ -224,57 +369,12 @@ public class PersonController {
 	@GetMapping("/communityEmail")
 	public List<String> getEmails(@RequestParam(value = "city") String city) {
 		Iterable<Person> persons = personService.getPersons();
+
+		log.info(persons);
 		List<String> listEmails = ((Collection<Person>) persons).stream().map(Person::getEmail)
 				.collect(Collectors.toList());
-
+		log.info("Endpoint /communityEmail valide");
 		return listEmails;
-
 	}
 
-	// TODO : ENDPOINTS ?? PASSER DANS SERVICE ET REPO => MVC
-	private final PersonRepository repository;
-
-	PersonController(PersonRepository repository) {
-		this.repository = repository;
-	}
-
-	// Aggregate root
-	// tag::get-aggregate-root[]
-	@GetMapping("/persons")
-	List<Person> all() {
-		return repository.findAll();
-	}
-	// end::get-aggregate-root[]
-
-	@PostMapping("/persons")
-	Person newPerson(@RequestBody Person newPerson) {
-		return repository.save(newPerson);
-	}
-
-	// Single item
-
-	@GetMapping("/persons/{id}")
-	Person one(@PathVariable Long id) {
-
-		return repository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
-	}
-
-	@PutMapping("/persons/{id}")
-	Person replacePerson(@RequestBody Person newPerson, @PathVariable Long id) {
-
-		return repository.findById(id).map(person -> {
-			person.setFirstName(newPerson.getFirstName());
-			person.setLastName(newPerson.getLastName());
-
-			return repository.save(person);
-		}).orElseGet(() -> {
-			newPerson.setId(id);
-			return repository.save(newPerson);
-		});
-	}
-
-	@DeleteMapping("/persons/{id}")
-	void deletePerson(@PathVariable Long id) {
-		repository.deleteById(id);
-	}
 }

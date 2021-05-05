@@ -1,13 +1,12 @@
 package com.project.safetynet.service;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.safetynet.model.Firestation;
-import com.project.safetynet.model.Person;
 import com.project.safetynet.repository.FirestationRepository;
 
 import lombok.Data;
@@ -27,13 +26,29 @@ public class FirestationService {
 		return firestationRepository.findByStation(station);
 	}
 
-	public Collection<? extends Person> getStationNumberByAddress(String address) {
-		return firestationRepository.findByAddress(address);
-	}
+//	public Collection<? extends Person> getStationNumberByAddress(String address) {
+//		return firestationRepository.findByAddress(address);
+//	}
 
 	public Firestation findStationNumberByAddress(String address) {
-		// TODO Auto-generated method stub
 		return firestationRepository.findStationByAddress(address);
+	}
+
+	public Iterable<Firestation> getFirestations() {
+		return firestationRepository.findAll();
+	}
+
+	public Optional<Firestation> getFirestationById(final Long id) {
+		return firestationRepository.findById(id);
+	}
+
+	public Firestation saveFirestation(Firestation firestation) {
+		Firestation savedFirestation = firestationRepository.save(firestation);
+		return savedFirestation;
+	}
+
+	public void deleteFirestationById(final Long id) {
+		firestationRepository.deleteById(id);
 	}
 
 }

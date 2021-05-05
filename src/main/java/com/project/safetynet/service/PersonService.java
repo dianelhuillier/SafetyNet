@@ -1,5 +1,6 @@
 package com.project.safetynet.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +23,9 @@ public class PersonService {
 	public Optional<Person> getPersonById(final Long id) {
 		return personRepository.findById(id);
 	}
-
-	public List<Person> getPersonsByAddress(final String address) {
-		return personRepository.findByAddress(address);
-	}
+//	public List<Person> getPersonsByAddress(final String address) {
+//		return personRepository.findByAddress(address);
+//	}
 
 	public Iterable<Person> getPersons() {
 		return personRepository.findAll();
@@ -33,11 +33,6 @@ public class PersonService {
 
 	public void deletePersonById(final Long id) {
 		personRepository.deleteById(id);
-	}
-
-	public Person savePerson(Person person) {
-		Person savedPerson = personRepository.save(person);
-		return savedPerson;
 	}
 
 	public List<Person> getPersonsByCity(String city) {
@@ -53,8 +48,24 @@ public class PersonService {
 	}
 
 	public List<Person> findPersonByAddress(String address) {
-		// TODO Auto-generated method stub
 		return personRepository.findByAddress(address);
+	}
+
+	public List<Person> getPhoneByFirstName(String firstName) {
+		return personRepository.findPhoneByFirstName(firstName);
+	}
+
+	public Collection<? extends Person> getPersonsByAddress(String address) {
+		return personRepository.findByAddress(address);
+	}
+
+//	public List<Person> findByFirstNameAndLastName(String firstName, String lastName) {
+//		return personRepository.findByFirstNameAndLastName(firstName, lastName);
+//	}
+
+	public Person savePerson(Person person) {
+		Person savedPerson = personRepository.save(person);
+		return savedPerson;
 	}
 
 }

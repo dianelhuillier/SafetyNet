@@ -1,6 +1,7 @@
 package com.project.safetynet.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,20 @@ public class MedicalRecordService {
 
 	public MedicalRecord findByFirstNameAndLastName(String firstName, String lastName) {
 		return medicalRecordRepository.findByFirstNameAndLastName(firstName, lastName);
+	}
+
+	public MedicalRecord saveMedicalRecord(MedicalRecord medicalRecord) {
+		MedicalRecord savedMedicalRecord = medicalRecordRepository.save(medicalRecord);
+		return savedMedicalRecord;
+	}
+
+	public Optional<MedicalRecord> getMedicalRecordById(final Long id) {
+		return medicalRecordRepository.findById(id);
+	}
+
+	public void deleteMedicalRecordById(Long id) {
+		medicalRecordRepository.deleteById(id);
+
 	}
 
 }

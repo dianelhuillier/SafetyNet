@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -115,7 +116,15 @@ public class ApplicationTests {
 		if (infoByAddress != null) {
 			assertTrue(infoByAddress.stream().anyMatch(s -> s.equals("Tessa")));
 		}
+	}
 
+	@Test
+	public void testGetPersonsByFirestationNumber() {
+		ListByStationDTO listByStationDTO = personController.getPersonsByFirestationNumber("3");
+		// j'ai une liste de personnes + numchilds + nmbadults
+		List<Object> list = (listByStationDTO.getPersons()).stream().map(Person::getFirstName)
+				.collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
 	}
 
 	@Test
@@ -145,30 +154,6 @@ public class ApplicationTests {
 		assertTrue(infos.stream().anyMatch(s -> s.equals("tenz@email.com")));
 
 	}
-//TEST A REFAIRE
-//	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
-//		// HashMap<Person, Long> listFinal = new HashMap<Person, Long>();
-//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-////		HashMap<Person, String> ageList = new HashMap<Person, String>();
-//		List<Person> persons = new ArrayList<>();
-//		int numberChilds = 0;
-//		int numberAdults = 0;
-//		for (Firestation firestation : firestations) {
-//			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
-////			Stream<List<Person>> ageList = Stream.of(persons).filter(personService.getPersonByAge()<18); //passer par medrecord pour l'age
-//		}
-//		for (Person person : persons) {
-//			if (Util.calculAgeByBirthdate(
-//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-//				numberChilds++;
-//			} else {
-//				numberAdults++;
-//			}
-//
-//		}
-////		long total = persons.stream().count();
-////		listFinal.put((Person) persons, total);
-//		return new ListByStationDTO(persons, numberChilds, numberAdults);
 
 	@Test
 	public void testGetPersons() {
@@ -232,47 +217,26 @@ public class ApplicationTests {
 		assertTrue(list.stream().anyMatch(s -> s.equals("834 Binoc Ave")));
 	}
 
-//	@Test
-//	public void createPerson() throws Exception {
-//		Person mockPerson = new Person("1", "Smallest Number", "1", Arrays.asList("1", "2", "3", "4"));
-//
-//		// studentService.addCourse to respond back with mockCourse
-//		Mockito.when(personService.createPerson(Mockito.anyString(), Mockito.any(Person.class))).thenReturn(mockPerson);
-//
-//		// Send course as body to /students/Student1/courses
-//		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/students/Student1/courses")
-//				.accept(MediaType.APPLICATION_JSON).content(exampleCourseJson).contentType(MediaType.APPLICATION_JSON);
-//
-//		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//		MockHttpServletResponse response = result.getResponse();
-//
-//		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-//
-//		assertEquals("http://localhost/students/Student1/courses/1", response.getHeader(HttpHeaders.LOCATION));
-//
-//	}
+	@Test
+	public void testGetPersonById() {
+		Optional<Person> persons = personService.getPersonById((long) 1);
+		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+	}
 
-//	@Test
-//	public void testGetPersonById() {
-//		Optional<Person> persons = personService.getPersonById((long) 1);
-//		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
-//		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
-//	}
-//
-//	@Test
-//	public void testGetFirestationById() {
-//		Optional<Firestation> firestations = firestationService.getFirestationById((long) 1);
-//		List<String> list = firestations.stream().map(Firestation::getAddress).collect(Collectors.toList());
-//		assertTrue(list.stream().anyMatch(s -> s.equals("1509 Culver St")));
-//	}
-//
-//	@Test
-//	public void testGetMedicalRecordById() {
-//		Optional<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordById((long) 1);
-//		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
-//		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
-//	}
+	@Test
+	public void testGetFirestationById() {
+		Optional<Firestation> firestations = firestationService.getFirestationById((long) 1);
+		List<String> list = firestations.stream().map(Firestation::getAddress).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("1509 Culver St")));
+	}
+
+	@Test
+	public void testGetMedicalRecordById() {
+		Optional<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordById((long) 1);
+		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+	}
 
 	@Test
 	public void testCreateStation() {
@@ -300,42 +264,5 @@ public class ApplicationTests {
 		List<MedicalRecord> medicalRecords = (List<MedicalRecord>) medicalRecordService.getMedicalRecord();
 		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
 		assertTrue(list.stream().anyMatch(s -> s.equals("Diane")));
-	}
-
-	@Test
-	public void testGetPersonsByAddress() {
-		Collection<? extends Person> persons = personService.getPersonsByAddress("834 Binoc Ave");
-		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("Tessa")));
-	}
-
-//	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
-//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-//		List<Person> persons = new ArrayList<>();
-//		int numberChilds = 0;
-//		int numberAdults = 0;
-//		for (Firestation firestation : firestations) {
-//			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
-//		}
-//		for (Person person : persons) {
-//			if (Util.calculAgeByBirthdate(
-//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-//				numberChilds++;
-//			} else {
-//				numberAdults++;
-//			}
-//
-//		}
-//		log.info("Endpoint /firestation valide");
-//		return new ListByStationDTO(persons, numberChilds, numberAdults);
-//	}
-
-	@Test
-	public void testGetPersonsByFirestationNumber() {
-		ListByStationDTO listByStationDTO = personController.getPersonsByFirestationNumber("3");
-		// j'ai une liste de personnes + numchilds + nmbadults
-		List<Object> list = (listByStationDTO.getPersons()).stream().map(Person::getFirstName)
-				.collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
 	}
 }

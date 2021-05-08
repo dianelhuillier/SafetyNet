@@ -152,52 +152,6 @@ public class PersonController {
 	 * âgé de 18 ans ou moins) dans la zone desservie.
 	 */
 
-//	@GetMapping("/firestation")
-//	public List<FamilyDTO> getPersonByStationNumber2(@RequestParam(value = "stationNumber") String station) {
-//		List<Firestation> stationByAddress = firestationService.getFirestationByStation(station);
-//		System.out.println(stationByAddress);
-//		//liste de station classees par address
-//		List<FamilyDTO> listFamily = new ArrayList<>();
-//		List<Person> listPersons = new ArrayList<>();
-//		for (Firestation firestation : stationByAddress) {
-//		}
-////		for (FamilyDTO familyDTO : listFamily) {
-////			if (Util.calculAgeByBirthdate(
-////					medicalRecordService.findMedicalRecordByFirstName(familyDTO.getFirstName()).getBirthdate()) <= 18) {
-////				familyDTO.setNumberChilds(+1);
-////			} else {
-////				familyDTO.setNumberAdults(+1);
-////			}
-//
-////log.info("Endpoint /firestation valide");
-//		return null;
-//
-//	}
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//	@GetMapping("/firestation")
-//	public List<FamilyDTO> getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
-//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-//		List<FamilyDTO> persons = new ArrayList<>();
-//
-//		for (Firestation firestation : firestations) {
-//			persons.add((FamilyDTO) personService.findPersonByAddress(firestation.getAddress()));
-//		}
-//		for (FamilyDTO person : persons) {
-//			if (Util.calculAgeByBirthdate(
-//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-//				FamilyDTO familyDTO = new FamilyDTO();
-//				familyDTO.setNumberChilds(+1);
-//			} else {
-//				FamilyDTO familyDTO = new FamilyDTO();
-//				familyDTO.setNumberAdults(+1);
-//			}
-//		}
-//		log.info("Endpoint /firestation valide");
-//		return persons;
-//
-//	}
-
 	@GetMapping("/firestation")
 	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
 		List<Firestation> firestations = firestationService.getFirestationByStation(station);

@@ -26,10 +26,6 @@ public class FirestationService {
 		return firestationRepository.findByStation(station);
 	}
 
-//	public Collection<? extends Person> getStationNumberByAddress(String address) {
-//		return firestationRepository.findByAddress(address);
-//	}
-
 	public Firestation findStationNumberByAddress(String address) {
 		return firestationRepository.findStationByAddress(address);
 	}
@@ -38,7 +34,7 @@ public class FirestationService {
 		return firestationRepository.findAll();
 	}
 
-	public Optional<Firestation> getFirestationById(final Long id) {
+	public Optional<Firestation> getFirestationById(Long id) {
 		return firestationRepository.findById(id);
 	}
 

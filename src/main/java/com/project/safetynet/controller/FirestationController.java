@@ -26,7 +26,7 @@ public class FirestationController {
 	}
 
 	@GetMapping("/firestation/{id}")
-	public Firestation getFirestation(@PathVariable("id") final Long id) {
+	public Firestation getFirestationById(@PathVariable("id") final Long id) {
 		Optional<Firestation> firestation = firestationService.getFirestationById(id);
 		if (firestation.isPresent()) {
 			return firestation.get();

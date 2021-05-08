@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MedicalRecord {
-//TODO : activer les listes medications et allergies
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -27,7 +27,5 @@ public class MedicalRecord {
 	private String birthdate;
 	private String medications;
 	private String allergies;
-//	private List<String> medications = null;
-//	private List<String> allergies = null;
 
 }

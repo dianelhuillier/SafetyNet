@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.project.safetynet.Application;
+import com.project.safetynet.controller.FirestationController;
 import com.project.safetynet.controller.MedicalRecordController;
 import com.project.safetynet.controller.PersonController;
 import com.project.safetynet.model.ChildrensDTO;
@@ -42,6 +44,8 @@ public class ApplicationTests {
 	private FirestationService firestationService;
 	@Autowired
 	private MedicalRecordController medicalRecordController;
+	@Autowired
+	private FirestationController firestationController;
 
 	@Test
 	void contextLoads() {
@@ -114,14 +118,6 @@ public class ApplicationTests {
 
 	}
 
-//	@Test
-//	public void testGetInfoNullByAddress() {
-//		List<FamilyDTO> persons = personController.getInfoByAddress("84 Binoc Ave");
-//		List<String> infoByAddress = persons.stream().map(FamilyDTO::getFirstName).collect(Collectors.toList());
-//		assertFalse(infoByAddress.stream().anyMatch(s -> s.equals("Tessa")));
-//		assertTrue(infoByAddress == null);
-//	}
-
 	@Test
 	public void testGetPhoneByStation() {
 		List<String> firestations = personController.getPhoneByStation("3");
@@ -174,16 +170,6 @@ public class ApplicationTests {
 ////		listFinal.put((Person) persons, total);
 //		return new ListByStationDTO(persons, numberChilds, numberAdults);
 
-	// !!!!!!!!!!!!!!!!!!
-//	@Test
-//	public void testGetPersonsByFirestationNumber() {
-//		ListByStationDTO listPersons = new ListByStationDTO((List<Person>) personController.getPersonsByFirestationNumber("3"), 0, 0);
-//	((List<Person>) listPersons).addAll((Collection<? extends Person>) new ListByStationDTO());
-//		List<String> getPersons = ((Collection<Person>) listPersons).stream().map(Person::getFirstName).collect(Collectors.toList());
-//		assertTrue(getPersons.stream().anyMatch(s -> s.equals("Tessa")));
-//
-//	}
-
 	@Test
 	public void testGetPersons() {
 		Iterable<Person> persons = personController.getPersons();
@@ -222,30 +208,6 @@ public class ApplicationTests {
 		assertTrue(list.equals("3"));
 	}
 
-//@Test
-//public void testPersonNotFoundException() {
-//	Optional<Person> persons = personService.getPersonById(null);
-//	
-//	assertThrows(PersonNotFoundException.class, () ->{
-//		  Long.parseLong("0");
-//	}); 
-////	List<Long> list = (persons).stream().map(Person::getId).collect(Collectors.toList());
-////	assertTrue(list.equals(1));
-//}
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//	@Test
-//	public void testGetPersonById() {
-//		Optional<Person>persons = personService.getPersonById((long) 1);
-//		List<String>list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
-//		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
-//	}
-	@Test
-	public void testGetPersonsByAddress() {
-		Collection<? extends Person> persons = personService.getPersonsByAddress("834 Binoc Ave");
-		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("Tessa")));
-	}
-
 	@Test
 	public void testGetMedicalRecordController() {
 		Iterable<MedicalRecord> medicalRecord = medicalRecordController.getMedicalRecord();
@@ -254,9 +216,96 @@ public class ApplicationTests {
 		assertTrue(list.stream().anyMatch(s -> s.equals("Tessa")));
 	}
 
-//	public Person savePerson(Person person) {
-//		Person savedPerson = personRepository.save(person);
-//		return savedPerson;
+	@Test
+	public void testGetFirestation() {
+		Iterable<Firestation> firestations = firestationService.getFirestations();
+		List<String> list = ((Collection<Firestation>) firestations).stream().map(Firestation::getAddress)
+				.collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("834 Binoc Ave")));
+	}
+
+	@Test
+	public void testGetFirestationController() {
+		Iterable<Firestation> firestations = firestationController.getFirestations();
+		List<String> list = ((Collection<Firestation>) firestations).stream().map(Firestation::getAddress)
+				.collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("834 Binoc Ave")));
+	}
+
+//	@Test
+//	public void createPerson() throws Exception {
+//		Person mockPerson = new Person("1", "Smallest Number", "1", Arrays.asList("1", "2", "3", "4"));
+//
+//		// studentService.addCourse to respond back with mockCourse
+//		Mockito.when(personService.createPerson(Mockito.anyString(), Mockito.any(Person.class))).thenReturn(mockPerson);
+//
+//		// Send course as body to /students/Student1/courses
+//		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/students/Student1/courses")
+//				.accept(MediaType.APPLICATION_JSON).content(exampleCourseJson).contentType(MediaType.APPLICATION_JSON);
+//
+//		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+//
+//		MockHttpServletResponse response = result.getResponse();
+//
+//		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+//
+//		assertEquals("http://localhost/students/Student1/courses/1", response.getHeader(HttpHeaders.LOCATION));
+//
 //	}
 
+	@Test
+	public void testGetPersonById() {
+		Optional<Person> persons = personService.getPersonById((long) 1);
+		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+	}
+
+	@Test
+	public void testGetFirestationById() {
+		Optional<Firestation> firestations = firestationService.getFirestationById((long) 1);
+		List<String> list = firestations.stream().map(Firestation::getAddress).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("1509 Culver St")));
+	}
+
+	@Test
+	public void testGetMedicalRecordById() {
+		Optional<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordById((long) 1);
+		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+	}
+
+	@Test
+	public void testCreateStation() {
+		Firestation firestations = firestationController.createFirestation(new Firestation(null, "Antibes", "88"));
+		List<Firestation> allFirestations = (List<Firestation>) firestationService.getFirestations();
+		List<String> list = ((Collection<Firestation>) allFirestations).stream().map(Firestation::getAddress)
+				.collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("Antibes")));
+		System.out.println("Caserne créée");
+	}
+
+	@Test
+	public void testCreatePerson() {
+		Person person = personController
+				.createPerson(new Person("Diane", "Lhuillier", "Address", "City", "Zip", "Phone", "imail@imail"));
+		List<Person> persons = (List<Person>) personService.getPersons();
+		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("Diane")));
+	}
+
+	@Test
+	public void testCreateMedicalRecord() {
+		MedicalRecord medicalRecord = medicalRecordController
+				.createMedicalRecord(new MedicalRecord(null, "Diane", "Lhuillier", "11/18/1990", null, null));
+		List<MedicalRecord> medicalRecords = (List<MedicalRecord>) medicalRecordService.getMedicalRecord();
+		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("Diane")));
+	}
+
+	@Test
+	public void testGetPersonsByAddress() {
+		Collection<? extends Person> persons = personService.getPersonsByAddress("834 Binoc Ave");
+		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("Tessa")));
+	}
 }

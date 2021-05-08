@@ -1,3 +1,4 @@
+
 package com.project.safetynet.model;
 
 import java.util.List;

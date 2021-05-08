@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.safetynet.model.ChildrensDTO;
 import com.project.safetynet.model.FamilyDTO;
 import com.project.safetynet.model.Firestation;
-import com.project.safetynet.model.ListByStationDTO;
 import com.project.safetynet.model.MedicalRecord;
 import com.project.safetynet.model.Person;
 import com.project.safetynet.model.PersonInfoDTO;
@@ -153,52 +152,67 @@ public class PersonController {
 	 */
 
 //	@GetMapping("/firestation")
-//	public List<FamilyDTO> getPersonByStationNumber(@RequestParam(value = "stationNumber") String station){
-//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-//		
-//		List<FamilyDTO> persons= new ArrayList<>();
-//
-//for (Firestation firestation : firestations) {
-//	persons.add((FamilyDTO) personService.findPersonByAddress(firestation.getAddress()));
+//	public List<FamilyDTO> getPersonByStationNumber2(@RequestParam(value = "stationNumber") String station) {
+//		List<Firestation> stationByAddress = firestationService.getFirestationByStation(station);
+//		System.out.println(stationByAddress);
+//		//liste de station classees par address
+//		List<FamilyDTO> listFamily = new ArrayList<>();
+//		List<Person> listPersons = new ArrayList<>();
+//		for (Firestation firestation : stationByAddress) {
 //		}
-//for (FamilyDTO person : persons) {
-//	int numberAdults = 0;
-//	int numberChilds = 0;
+////		for (FamilyDTO familyDTO : listFamily) {
+////			if (Util.calculAgeByBirthdate(
+////					medicalRecordService.findMedicalRecordByFirstName(familyDTO.getFirstName()).getBirthdate()) <= 18) {
+////				familyDTO.setNumberChilds(+1);
+////			} else {
+////				familyDTO.setNumberAdults(+1);
+////			}
 //
-//	if (Util.calculAgeByBirthdate(
-//			medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-//		numberChilds++;
-//	} else {
-//		numberAdults++;
-//	}
-//	
-//}
-//log.info("Endpoint /firestation valide");
-//		return persons;
+////log.info("Endpoint /firestation valide");
+//		return null;
+//
 //	}
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	@GetMapping("/firestation")
-	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
-		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-		List<Person> persons = new ArrayList<>();
-		int numberChilds = 0;
-		int numberAdults = 0;
-		for (Firestation firestation : firestations) {
-			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
-		}
-		for (Person person : persons) {
-			if (Util.calculAgeByBirthdate(
-					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-				numberChilds++;
-			} else {
-				numberAdults++;
-			}
-
-		}
-		log.info("Endpoint /firestation valide");
-		return new ListByStationDTO(persons, numberChilds, numberAdults);
-	}
+//	@GetMapping("/firestation")
+////	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
+//	public List<FamilyDTO> getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
+//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+//		List<FamilyDTO> persons = new ArrayList<>();
+//
+//		for (Firestation firestation : firestations) {
+//			persons.add((FamilyDTO) personService.findPersonByAddress(firestation.getAddress()));
+//		}
+//		for (FamilyDTO person : persons) {
+//			if (Util.calculAgeByBirthdate(
+//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+//				familyDTO.setNumberChilds(+1);
+//			} else {
+//				familyDTO.setNumberAdults(+1);
+//			}
+//		}
+//		return persons;
+//
+//	}
+//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+//		List<Person> persons = new ArrayList<>();
+//		int numberChilds = 0;
+//		int numberAdults = 0;
+//		for (Firestation firestation : firestations) {
+//			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
+//		}
+//		for (Person person : persons) {
+//			if (Util.calculAgeByBirthdate(
+//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+//				numberChilds++;
+//			} else {
+//				numberAdults++;
+//			}
+//
+//		}
+//		log.info("Endpoint /firestation valide");
+//		return new ListByStationDTO(persons, numberChilds, numberAdults);
+//	}
 
 	/*
 	 * TODO : ok http://localhost:8080/childAlert?address=<address> Cette url doit
@@ -216,8 +230,7 @@ public class PersonController {
 
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
-			// if (medicalRecord != null &&
-			// Util.calculAgeByBirthdate(medicalRecord.getBirthdate()) <= 18) {
+
 			if (Util.calculAgeByBirthdate(medicalRecord.getBirthdate()) <= 18) {
 				childrens.add(new ChildrensDTO(medicalRecord.getFirstName(), medicalRecord.getLastName(),
 						medicalRecord.getBirthdate(), personService.findPersonByAddress(person.getAddress())));

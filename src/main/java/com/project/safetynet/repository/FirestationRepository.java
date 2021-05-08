@@ -19,4 +19,6 @@ public interface FirestationRepository extends JpaRepository<Firestation, Long> 
 
 	Firestation findStationByAddress(String address);
 
+	void deleteByAddress(String address);
+
 }

@@ -21,6 +21,7 @@ import com.project.safetynet.controller.PersonController;
 import com.project.safetynet.model.ChildrensDTO;
 import com.project.safetynet.model.FamilyDTO;
 import com.project.safetynet.model.Firestation;
+import com.project.safetynet.model.ListByStationDTO;
 import com.project.safetynet.model.MedicalRecord;
 import com.project.safetynet.model.Person;
 import com.project.safetynet.model.PersonInfoDTO;
@@ -306,5 +307,35 @@ public class ApplicationTests {
 		Collection<? extends Person> persons = personService.getPersonsByAddress("834 Binoc Ave");
 		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
 		assertTrue(list.stream().anyMatch(s -> s.equals("Tessa")));
+	}
+
+//	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
+//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+//		List<Person> persons = new ArrayList<>();
+//		int numberChilds = 0;
+//		int numberAdults = 0;
+//		for (Firestation firestation : firestations) {
+//			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
+//		}
+//		for (Person person : persons) {
+//			if (Util.calculAgeByBirthdate(
+//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+//				numberChilds++;
+//			} else {
+//				numberAdults++;
+//			}
+//
+//		}
+//		log.info("Endpoint /firestation valide");
+//		return new ListByStationDTO(persons, numberChilds, numberAdults);
+//	}
+
+	@Test
+	public void testGetPersonsByFirestationNumber() {
+		ListByStationDTO listByStationDTO = personController.getPersonsByFirestationNumber("3");
+		// j'ai une liste de personnes + numchilds + nmbadults
+		List<Object> list = (listByStationDTO.getPersons()).stream().map(Person::getFirstName)
+				.collect(Collectors.toList());
+		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
 	}
 }

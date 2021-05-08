@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -253,26 +252,26 @@ public class ApplicationTests {
 //
 //	}
 
-	@Test
-	public void testGetPersonById() {
-		Optional<Person> persons = personService.getPersonById((long) 1);
-		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
-	}
-
-	@Test
-	public void testGetFirestationById() {
-		Optional<Firestation> firestations = firestationService.getFirestationById((long) 1);
-		List<String> list = firestations.stream().map(Firestation::getAddress).collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("1509 Culver St")));
-	}
-
-	@Test
-	public void testGetMedicalRecordById() {
-		Optional<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordById((long) 1);
-		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
-		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
-	}
+//	@Test
+//	public void testGetPersonById() {
+//		Optional<Person> persons = personService.getPersonById((long) 1);
+//		List<String> list = persons.stream().map(Person::getFirstName).collect(Collectors.toList());
+//		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+//	}
+//
+//	@Test
+//	public void testGetFirestationById() {
+//		Optional<Firestation> firestations = firestationService.getFirestationById((long) 1);
+//		List<String> list = firestations.stream().map(Firestation::getAddress).collect(Collectors.toList());
+//		assertTrue(list.stream().anyMatch(s -> s.equals("1509 Culver St")));
+//	}
+//
+//	@Test
+//	public void testGetMedicalRecordById() {
+//		Optional<MedicalRecord> medicalRecords = medicalRecordService.getMedicalRecordById((long) 1);
+//		List<String> list = medicalRecords.stream().map(MedicalRecord::getFirstName).collect(Collectors.toList());
+//		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
+//	}
 
 	@Test
 	public void testCreateStation() {

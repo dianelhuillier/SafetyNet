@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.safetynet.model.ChildrensDTO;
 import com.project.safetynet.model.FamilyDTO;
 import com.project.safetynet.model.Firestation;
+import com.project.safetynet.model.ListByStationDTO;
 import com.project.safetynet.model.MedicalRecord;
 import com.project.safetynet.model.Person;
 import com.project.safetynet.model.PersonInfoDTO;
@@ -175,7 +176,6 @@ public class PersonController {
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //	@GetMapping("/firestation")
-////	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
 //	public List<FamilyDTO> getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
 //		List<Firestation> firestations = firestationService.getFirestationByStation(station);
 //		List<FamilyDTO> persons = new ArrayList<>();
@@ -186,33 +186,39 @@ public class PersonController {
 //		for (FamilyDTO person : persons) {
 //			if (Util.calculAgeByBirthdate(
 //					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+//				FamilyDTO familyDTO = new FamilyDTO();
 //				familyDTO.setNumberChilds(+1);
 //			} else {
+//				FamilyDTO familyDTO = new FamilyDTO();
 //				familyDTO.setNumberAdults(+1);
 //			}
 //		}
+//		log.info("Endpoint /firestation valide");
 //		return persons;
 //
 //	}
-//		List<Firestation> firestations = firestationService.getFirestationByStation(station);
-//		List<Person> persons = new ArrayList<>();
-//		int numberChilds = 0;
-//		int numberAdults = 0;
-//		for (Firestation firestation : firestations) {
-//			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
-//		}
-//		for (Person person : persons) {
-//			if (Util.calculAgeByBirthdate(
-//					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
-//				numberChilds++;
-//			} else {
-//				numberAdults++;
-//			}
-//
-//		}
-//		log.info("Endpoint /firestation valide");
-//		return new ListByStationDTO(persons, numberChilds, numberAdults);
-//	}
+
+	@GetMapping("/firestation")
+	public ListByStationDTO getPersonsByFirestationNumber(@RequestParam(value = "stationNumber") String station) {
+		List<Firestation> firestations = firestationService.getFirestationByStation(station);
+		List<Person> persons = new ArrayList<>();
+		int numberChilds = 0;
+		int numberAdults = 0;
+		for (Firestation firestation : firestations) {
+			persons.addAll(personService.findPersonByAddress(firestation.getAddress()));
+		}
+		for (Person person : persons) {
+			if (Util.calculAgeByBirthdate(
+					medicalRecordService.findMedicalRecordByFirstName(person.getFirstName()).getBirthdate()) <= 18) {
+				numberChilds++;
+			} else {
+				numberAdults++;
+			}
+
+		}
+		log.info("Endpoint /firestation valide");
+		return new ListByStationDTO(persons, numberChilds, numberAdults);
+	}
 
 	/*
 	 * TODO : ok http://localhost:8080/childAlert?address=<address> Cette url doit

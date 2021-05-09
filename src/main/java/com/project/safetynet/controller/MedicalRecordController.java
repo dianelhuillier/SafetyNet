@@ -70,11 +70,6 @@ public class MedicalRecordController {
 		}
 	}
 
-	/*
-	 * @DeleteMapping("/medicalRecords/firstName=<firstName>&lastName=<lastName>")
-	 * void deleteMedicalRecord(@PathVariable String firstName, @PathVariable String
-	 * lastName) { repository.deleteByFirstNameAndLastName(firstName, lastName); }
-	 */
 	@DeleteMapping("/medicalRecords/{id}")
 	public void deleteMedicalRecord(@PathVariable("id") final Long id) {
 		medicalRecordService.deleteMedicalRecordById(id);

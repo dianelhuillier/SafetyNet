@@ -106,7 +106,6 @@ public class ApplicationTests {
 		List<FamilyDTO> persons = personController.getPersonsByFirestationNumberAndAddress("3");
 		List<String> listByStation = persons.stream().map(FamilyDTO::getFirstName).collect(Collectors.toList());
 		assertTrue(listByStation.stream().anyMatch(s -> s.equals("Tessa")));
-
 	}
 
 	@Test
@@ -122,7 +121,7 @@ public class ApplicationTests {
 	public void testGetPersonsByFirestationNumber() {
 		ListByStationDTO listByStationDTO = personController.getPersonsByFirestationNumber("3");
 		// j'ai une liste de personnes + numchilds + nmbadults
-		List<Object> list = (listByStationDTO.getPersons()).stream().map(Person::getFirstName)
+		List<String> list = (listByStationDTO.getPersons()).stream().map(Person::getFirstName)
 				.collect(Collectors.toList());
 		assertTrue(list.stream().anyMatch(s -> s.equals("John")));
 	}
@@ -137,9 +136,7 @@ public class ApplicationTests {
 	public void testGetChildByAddress() {
 		List<ChildrensDTO> childs = personController.getChildByAddress("834 Binoc Ave");
 		List<String> birthdateChild = childs.stream().map(ChildrensDTO::getBirthdate).collect(Collectors.toList());
-
 		assertTrue(birthdateChild.stream().anyMatch(s -> s.equals("02/18/2012")));
-
 		for (String birthdate : birthdateChild) {
 			ArrayList<Long> ageChild = new ArrayList<Long>(Arrays.asList(Util.calculAgeByBirthdate(birthdate)));
 			assertFalse(ageChild.stream().anyMatch(s -> s.compareTo(s) > 18));
@@ -152,7 +149,6 @@ public class ApplicationTests {
 		List<PersonInfoDTO> personsInfos = personController.getInfos("Tessa", "Carman");
 		List<String> infos = personsInfos.stream().map(PersonInfoDTO::getEmail).collect(Collectors.toList());
 		assertTrue(infos.stream().anyMatch(s -> s.equals("tenz@email.com")));
-
 	}
 
 	@Test

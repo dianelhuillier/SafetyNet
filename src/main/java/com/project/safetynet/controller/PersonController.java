@@ -133,11 +133,6 @@ public class PersonController {
 		}
 	}
 
-	/*
-	 * @DeleteMapping("/persons/firstName=<firstName>&lastName=<lastName>") void
-	 * deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
-	 * repository.deleteByFirstNameAndLastName(firstName, lastName); }
-	 */
 	@DeleteMapping("/persons/{id}")
 	public void deletePerson(@PathVariable("id") final Long id) {
 		personService.deletePersonById(id);
@@ -183,11 +178,9 @@ public class PersonController {
 	 */
 	@GetMapping("/childAlert")
 	public List<ChildrensDTO> getChildByAddress(@RequestParam(value = "address") String address) {
-
 		List<Person> persons = personService.findPersonByAddress(address); // retourne la liste des personnes en
 																			// fonction de l'adresse qui lui correspond
 		List<ChildrensDTO> childrens = new ArrayList<>();
-
 		for (Person person : persons) {
 			MedicalRecord medicalRecord = medicalRecordService.findMedicalRecordByFirstName(person.getFirstName());
 
@@ -246,7 +239,6 @@ public class PersonController {
 						Util.calculAgeByBirthdate(medicalRecord.getBirthdate()), person.getPhone(),
 						firestation.getStation(), medicalRecord.getMedications(), medicalRecord.getAllergies(),
 						personService.findPersonByAddress(person.getAddress()), 0, 0));
-
 			}
 		}
 		log.info("Endpoint /fire valide");
@@ -297,7 +289,6 @@ public class PersonController {
 		}
 		log.info("Endpoint /flood valide");
 		return infoFlood;
-
 	}
 
 	/*
@@ -307,18 +298,13 @@ public class PersonController {
 	 * antécédents médicaux (médicaments, posologie, allergies) de chaque habitant.
 	 * Si plusieurs personnes portent le même nom, elles doivent toutes apparaître.
 	 */
-//	public List<Person> getInflos(String fn, String ln) {
-//		
-//	}
 
 	@GetMapping("/personInfo")
 	public List<PersonInfoDTO> getInfos(@RequestParam(value = "firstName") String firstName,
 			@RequestParam(value = "lastName") String lastName) {
-
 		List<Person> persons = personService.getPersonsByLastName(lastName);
 		log.info("liste de personnes ayant le même nom de famille");
 		List<PersonInfoDTO> familyName = new ArrayList<>();
-
 		if (lastName == null) {
 			log.error("nom de famille inexistant");
 		} else {
@@ -342,7 +328,6 @@ public class PersonController {
 	@GetMapping("/communityEmail")
 	public List<String> getEmails(@RequestParam(value = "city") String city) {
 		Iterable<Person> persons = personService.getPersons();
-
 		log.info(persons);
 		List<String> listEmails = ((Collection<Person>) persons).stream().map(Person::getEmail)
 				.collect(Collectors.toList());
